@@ -121,6 +121,20 @@ export class ZoomPanPinch {
     currentWindow?.addEventListener("keydown", this.setKeyPressed, passive);
   };
 
+  createWheelStopListener = (element: any, callback: any, timeout: any) => {
+    let handle: any = null;
+    const onScroll = function (event: any) {
+      if (handle) {
+        clearTimeout(handle);
+      }
+      handle = setTimeout(callback(event), timeout || 200); // default 200 ms
+    };
+    element.addEventListener("wheel", onScroll);
+    return function () {
+      element.removeEventListener("wheel", onScroll);
+    };
+  };
+
   cleanupWindowEvents = (): void => {
     const passive = makePassiveEventOption();
     const currentDocument = this.wrapperComponent?.ownerDocument;
@@ -149,11 +163,23 @@ export class ZoomPanPinch {
     // Zooming events on wrapper
     const passive = makePassiveEventOption();
 
-    wrapper.addEventListener("wheel", this.onWheelZoom, passive);
+    //wrapper.addEventListener("wheel", this.onWheelZoom, passive);
+    wrapper.addEventListener("wheel", this.onPanning, passive);
+    wrapper.addEventListener("wheel", this.onPanningStart, passive);
+
     wrapper.addEventListener("dblclick", this.onDoubleClick, passive);
     wrapper.addEventListener("touchstart", this.onTouchPanningStart, passive);
     wrapper.addEventListener("touchmove", this.onTouchPanning, passive);
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
+
+    this.createWheelStopListener(
+      wrapper,
+      (event: any) => {
+        this.onPanningStop(event);
+        console.log("onwheelstop");
+      },
+      200,
+    );
   };
 
   handleInitialize = (contentComponent: HTMLDivElement): void => {
@@ -188,9 +214,13 @@ export class ZoomPanPinch {
     const keysPressed = this.isPressingKeys(this.setup.wheel.activationKeys);
     if (!keysPressed) return;
 
+    event.preventDefault();
+    event.stopPropagation();
+    /*
     handleWheelStart(this, event);
     handleWheelZoom(this, event);
     handleWheelStop(this, event);
+    */
   };
 
   /// ///////
@@ -222,7 +252,7 @@ export class ZoomPanPinch {
 
     if (disabled) return;
 
-    const isAllowed = isPanningAllowed(this);
+    const isAllowed = isPanningAllowed(this, event);
     if (!isAllowed) return;
 
     const keysPressed = this.isPressingKeys(this.setup.panning.activationKeys);
@@ -230,6 +260,14 @@ export class ZoomPanPinch {
 
     event.preventDefault();
     event.stopPropagation();
+
+    let x = event.clientX;
+    let y = event.clientY;
+
+    if (event instanceof WheelEvent) {
+      x += event.deltaX;
+      y += event.deltaY;
+    }
 
     handlePanning(this, event.clientX, event.clientY);
     handleCallback(getContext(this), event, onPanning);
@@ -336,7 +374,7 @@ export class ZoomPanPinch {
     if (this.isPanning && event.touches.length === 1) {
       if (disabled) return;
 
-      const isAllowed = isPanningAllowed(this);
+      const isAllowed = isPanningAllowed(this, event);
       if (!isAllowed) return;
 
       event.preventDefault();
