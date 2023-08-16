@@ -269,7 +269,7 @@ export class ZoomPanPinch {
       y += event.deltaY;
     }
 
-    handlePanning(this, event.clientX, event.clientY);
+    handlePanning(this, x, y);
     handleCallback(getContext(this), event, onPanning);
   };
 
