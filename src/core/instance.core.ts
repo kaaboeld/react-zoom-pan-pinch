@@ -21,11 +21,14 @@ import { handleCancelAnimation } from "./animations/animations.utils";
 import { isWheelAllowed } from "./wheel/wheel.utils";
 import { isPinchAllowed, isPinchStartAllowed } from "./pinch/pinch.utils";
 import { handleCalculateBounds } from "./bounds/bounds.utils";
+/*
 import {
   handleWheelStart,
   handleWheelZoom,
   handleWheelStop,
 } from "./wheel/wheel.logic";
+*/
+
 import { isPanningAllowed, isPanningStartAllowed } from "./pan/panning.utils";
 import {
   handlePanning,
