@@ -268,8 +268,8 @@ export class ZoomPanPinch {
     let y = event.clientY;
 
     if (event instanceof WheelEvent) {
-      x += event.deltaX;
-      y += event.deltaY;
+      x -= event.deltaX;
+      y -= event.deltaY;
     }
 
     handlePanning(this, x, y);
