@@ -179,7 +179,6 @@ export class ZoomPanPinch {
       wrapper,
       (event: any) => {
         this.onPanningStop(event);
-        console.log("onwheelstop");
       },
       200,
     );
@@ -267,6 +266,7 @@ export class ZoomPanPinch {
     let x = event.clientX;
     let y = event.clientY;
     const directionInvertedFromDevice = event.webkitDirectionInvertedFromDevice;
+    console.log("event", event);
     if (event instanceof WheelEvent) {
       console.log("event invert", directionInvertedFromDevice);
       x += event.deltaX;
