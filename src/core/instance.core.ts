@@ -249,7 +249,7 @@ export class ZoomPanPinch {
     handleCallback(getContext(this), event, onPanningStart);
   };
 
-  onPanning = (event: MouseEvent): void => {
+  onPanning = (event: any): void => {
     const { disabled } = this.setup;
     const { onPanning } = this.props;
 
@@ -266,8 +266,9 @@ export class ZoomPanPinch {
 
     let x = event.clientX;
     let y = event.clientY;
-
+    const directionInvertedFromDevice = event.webkitDirectionInvertedFromDevice;
     if (event instanceof WheelEvent) {
+      console.log("event invert", directionInvertedFromDevice);
       x += event.deltaX;
       y += event.deltaY;
     }
