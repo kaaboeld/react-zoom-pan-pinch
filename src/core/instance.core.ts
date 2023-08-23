@@ -269,8 +269,8 @@ export class ZoomPanPinch {
     console.log("trackpad event", event);
     if (event instanceof WheelEvent) {
       console.log("event invert", directionInvertedFromDevice);
-      x += event.deltaX;
-      y += event.deltaY;
+      x -= event.deltaX;
+      y -= event.deltaY;
     }
 
     handlePanning(this, x, y);
