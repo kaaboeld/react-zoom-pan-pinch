@@ -266,11 +266,14 @@ export class ZoomPanPinch {
     let x = event.clientX;
     let y = event.clientY;
     const directionInvertedFromDevice = event.webkitDirectionInvertedFromDevice;
-    console.log("trackpad event", event);
     if (event instanceof WheelEvent) {
-      console.log("event invert", directionInvertedFromDevice);
-      x -= event.deltaX;
-      y -= event.deltaY;
+      if (!directionInvertedFromDevice) {
+        x -= event.deltaX;
+        y -= event.deltaY;
+      } else {
+        x += event.deltaX;
+        y += event.deltaY;
+      }
     }
 
     handlePanning(this, x, y);
